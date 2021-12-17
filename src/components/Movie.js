@@ -8,11 +8,23 @@ const Movie = (props) => {
 
     const [movie, setMovie] = useState('');
 
+    const { setMovies } = props
     const { id } = useParams();
     const { push } = useHistory();
 
+    const handleDelete = () => {
+        axios.delete(`http://localhost:9000/api/movies/${id}`)
+            .then(res => {
+                setMovies(res.data);
+                push('/movies');
+            })
+            .catch(err => {
+                console.error(err);
+            })
+    }
+
     useEffect(()=>{
-        axios.get(`http://localhost:5000/api/movies/${id}`)
+        axios.get(`http://localhost:9000/api/movies/${id}`)
             .then(res=>{
                 setMovie(res.data);
             })
@@ -52,7 +64,7 @@ const Movie = (props) => {
                         <section>
                             <span className="m-2 btn btn-dark">Favorite</span>
                             <Link to={`/movies/edit/${movie.id}`} className="m-2 btn btn-success">Edit</Link>
-                            <span className="delete"><input type="button" className="m-2 btn btn-danger" value="Delete"/></span>
+                            <span className="delete" onClick={handleDelete}><input type="button" className="m-2 btn btn-danger" value="Delete"/></span>
                         </section>
                     </div>
                 </div>
@@ -62,3 +74,4 @@ const Movie = (props) => {
 }
 
 export default Movie;
+
